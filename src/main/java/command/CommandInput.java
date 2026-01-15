@@ -2,6 +2,7 @@ package command;
 
 import lombok.Data;
 import ticket.Ticket;
+import users.ExpertiseArea;
 
 import java.util.ArrayList;
 
@@ -16,4 +17,7 @@ public class CommandInput {
     private ArrayList<String> blockingFor;
     private int[] tickets;
     private ArrayList<String> assignedDevs;
+    private int ticketID;
+    private ArrayList<String> expertiseArea;
+    private String comment;
 }

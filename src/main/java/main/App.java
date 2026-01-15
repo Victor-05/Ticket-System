@@ -69,7 +69,7 @@ public class App {
         UserFactory.create(inputLoader.getUsers(), usersDatabase);
 
         for (CommandInput x : inputs) {
-            Command newCommand = CommandFactory.create(x, app);
+            Command newCommand = CommandFactory.create(x, app, milestoneStorage, ticketStorage);
             newCommand.execute(app, ticketStorage, commands, milestoneStorage);
         }
 
@@ -79,8 +79,8 @@ public class App {
             outputs.add(cmdNode);
         }
 
-        String prettyJson = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(milestoneStorage.getMilestones());
-        System.out.println(prettyJson);
+//        String prettyJson = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(milestoneStorage.getMilestones());
+//        System.out.println(prettyJson);
 
 
         // TODO 2: process commands.

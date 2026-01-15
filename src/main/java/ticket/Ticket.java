@@ -1,9 +1,11 @@
 package ticket;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
+import users.ExpertiseArea;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 @Data
 @JsonTypeInfo(
@@ -17,16 +19,43 @@ import lombok.Data;
         @JsonSubTypes.Type(value = FeatureRequest.class, name = "FEATURE_REQUEST"),
         @JsonSubTypes.Type(value = UIFeedback.class, name = "UI_FEEDBACK")
 })
-
 public abstract class Ticket {
     private int id;
     private String type;
     private String title;
     private String businessPriority;
     private String status;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String expertiseArea;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private ExpertiseArea expertiseArea;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private  String description;
     private String reportedBy;
+    @JsonIgnore
+    private Boolean isAssignedToMilestone = false;
+    @JsonIgnore
+    private String createdAt;
+    public void changePriority() {
+        if (this.getBusinessPriority().equals("LOW")) {
+            this.setBusinessPriority("MEDIUM");
+        }
+        if (this.getBusinessPriority().equals("MEDIUM")) {
+            this.setBusinessPriority("HIGH");
+        }
+        if (this.getBusinessPriority().equals("HIGH")) {
+            this.setBusinessPriority("CRITICAL");
+        }
+    }
+
+    public void changePriority(String newPriority) {
+        this.setBusinessPriority(newPriority);
+    }
+
+    public void changeIsAssignedToMilestone() {
+        if (isAssignedToMilestone == true) {
+            this.setIsAssignedToMilestone(false);
+        } else {
+            this.setIsAssignedToMilestone(true);
+        }
+    }
+
 }

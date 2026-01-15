@@ -3,7 +3,6 @@ package command;
 import main.Application;
 import milestone.MilestoneStorage;
 import ticket.ReportTicket;
-import ticket.Ticket;
 import ticket.TicketStorage;
 import users.UsersDatabase;
 
@@ -40,10 +39,11 @@ public class ReportTicketCommand extends Command {
             commands.add(error);
             return;
         }
-        Ticket ticket = new ReportTicket(this);
+        ReportTicket ticket = new ReportTicket(this);
         if (this.getParams().getReportedBy().isEmpty()) {
             ticket.setBusinessPriority("LOW");
         }
+        ticket.setCreatedAt(Application.currentDate.toString());
         ticketStorage.addTicket(ticket);
 
     }

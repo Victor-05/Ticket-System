@@ -41,4 +41,17 @@ public class UsersDatabase {
         }
         return null;
     }
+
+    public static User getUser(String username) {
+        for (User x : users) {
+            if (x.getUsername().equals(username)) {
+                return x;
+            }
+        }
+        return null;
+    }
+
+    public static void reset() {
+        users.clear();
+    }
 }

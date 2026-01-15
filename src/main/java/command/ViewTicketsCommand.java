@@ -1,5 +1,6 @@
 package command;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import main.Application;
 import milestone.MilestoneStorage;
 import ticket.Ticket;
@@ -30,8 +31,13 @@ public class ViewTicketsCommand extends Command {
             commands.add(this);
             return;
         }
-        if (UsersDatabase.getUserRole(getUsername()) ==Role.DEVELOPER) {
-
+        if (UsersDatabase.getUserRole(getUsername()) == Role.DEVELOPER) {
+            for (Ticket x : ticketStorage.getTickets()) {
+                if (x.getStatus().equals("OPEN")) {
+                    tickets.add(x);
+                }
+            }
+            commands.add(this);
         }
     }
 }

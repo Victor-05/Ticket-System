@@ -1,5 +1,9 @@
 package ticket;
 
+import lombok.Data;
+import milestone.Milestone;
+import milestone.MilestoneStorage;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +37,35 @@ public class TicketStorage {
         return outTickets;
     }
 
+    public Ticket getTicketsById(int id) {
+        for (Ticket x : tickets) {
+            if (x.getId() == id) {
+                return x;
+            }
+        }
+        return null;
+    }
+
     public List<Ticket> getTickets() {
         return tickets;
     }
+
+    public String isAssignedToMilestone(int id) {
+        for (Ticket x : tickets) {
+            if (x.getId() == id) {
+                if (MilestoneStorage.nameOfTheMilestoneThatContaintsTicket(id) != null) {
+                    x.changeIsAssignedToMilestone();
+                    return MilestoneStorage.nameOfTheMilestoneThatContaintsTicket(id);
+                }
+            }
+        }
+        return null;
+    }
+
+    public void reset() {
+        tickets.clear();
+        this.id = 0;
+    }
+
+
 }

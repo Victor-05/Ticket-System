@@ -1,5 +1,9 @@
 package users;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
 public class Developer extends User {
     private String hireDate;
     private ExpertiseArea expertiseArea;
@@ -46,5 +50,4 @@ public class Developer extends User {
             return new Developer(this);
         }
     }
-
 }
