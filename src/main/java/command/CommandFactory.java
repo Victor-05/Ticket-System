@@ -24,6 +24,12 @@ public class CommandFactory {
             case "undoAddComment" -> new UndoAddComment(input);
             case "changeStatus" -> new ChangeStatus(input);
             case "viewTicketHistory" -> new ViewTicketHistory(input);
+            case "undoChangeStatus" -> new UndoChangeStatus(input);
+            case "search" -> switch (input.getFilters().getSearchType()) {
+                case "TICKET" -> new SearchTicket(input);
+                case "DEVELOPER" -> new SearchUser(input);
+                default -> null;
+            };
             default -> null;
         };
     }

@@ -1,9 +1,7 @@
 package command;
 
 import actions.Action;
-import actions.Assigned;
 import actions.StatusChanged;
-import lombok.Data;
 import main.Application;
 import milestone.MilestoneStorage;
 import ticket.ReportTicket;
@@ -13,14 +11,13 @@ import users.UsersDatabase;
 
 import java.util.ArrayList;
 
-@Data
-public class ChangeStatus extends Command {
+public class UndoChangeStatus extends Command {
     private int ticketID;
-    ChangeStatus(CommandInput input) {
+    UndoChangeStatus(CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
-        this.setTicketID(input.getTicketID());
+        ticketID = input.getTicketID();
     }
 
     @Override
@@ -39,15 +36,15 @@ public class ChangeStatus extends Command {
         }
         if (isOk) {
             String from = "";
-            if (ticket.getStatus().equals("OPEN")) {
-                ticket.setStatus("IN_PROGRESS");
-                from = "OPEN";
-            } else if (ticket.getStatus().equals("IN_PROGRESS")) {
-                ticket.setStatus("RESOLVED");
+            if (ticket.getStatus().equals("IN_PROGRESS")) {
+                ticket.setStatus("OPEN");
                 from = "IN_PROGRESS";
             } else if (ticket.getStatus().equals("RESOLVED")) {
-                ticket.setStatus("CLOSED");
+                ticket.setStatus("IN_PROGRESS");
                 from = "RESOLVED";
+            } else if (ticket.getStatus().equals("CLOSED")) {
+                ticket.setStatus("RESOLVED");
+                from = "CLOSED";
                 milestoneStorage.changeOpenToClosed(ticketID);
             }
             Action historyAction = new StatusChanged("STATUS_CHANGED", getUsername(), getTimestamp(), from, ticket.getStatus());
@@ -58,5 +55,4 @@ public class ChangeStatus extends Command {
             return;
         }
     }
-
 }

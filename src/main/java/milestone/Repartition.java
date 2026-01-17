@@ -2,11 +2,18 @@ package milestone;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+
 @Data
 public class Repartition {
     private String developer;
-    private int[] assignedTickets;
+    private ArrayList<Integer> assignedTickets = new ArrayList<>();
     Repartition() {
-        assignedTickets = new int[0];
+
     }
+    public Repartition(Repartition repartition) {
+        this.developer = repartition.developer;
+        this.assignedTickets = new ArrayList<>(repartition.assignedTickets);
+    }
+
 }

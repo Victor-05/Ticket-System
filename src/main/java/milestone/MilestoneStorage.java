@@ -1,8 +1,5 @@
 package milestone;
 
-import ticket.Ticket;
-import ticket.TicketStorage;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,25 +41,30 @@ public class MilestoneStorage {
         return null;
     }
 
-    public void getMilestoneByOpenTikcket(int ticketId) {
+    public static ArrayList<Integer> getTicketsOfMilestonesOfUser(String name) {
+        ArrayList<Integer> tickets = new ArrayList<>();
         for (Milestone x : milestones) {
-            Boolean isThere = false;
-            int [] openTickets = new int[x.getTickets().length];
-            int contor = 0, changedTicket = 0;
+            for (String username : x.getAssignedDevs()) {
+                if (username.equals(name)) {
+                    tickets.addAll(x.getTickets());
+                }
+            }
+        }
+        tickets.sort((a, b) -> a - b);
+        return tickets;
+    }
+
+    public void changeOpenToClosed(int ticketId) {
+        for (Milestone x : milestones) {
+            int counter = 0;
             for (int id : x.getTickets()) {
                 if (ticketId == id) {
-                    changedTicket = id;
-                    isThere = true;
-                } else {
-                    openTickets[contor] = id;
+                    x.getOpenTickets().remove(counter);
+                    x.getClosedTickets().addLast(ticketId);
+                    x.setCompletionPercentage(x.getClosedTickets().size() / x.getTickets().size());
+                    return;
                 }
-                contor++;
-            }
-            if (isThere) {
-                x.setTickets(openTickets);
-                int[] closedTickets = new int[x.getClosedTickets().length + 1];
-                closedTickets[x.getClosedTickets().length] = changedTicket;
-                x.setClosedTickets(closedTickets);
+                counter++;
             }
         }
     }

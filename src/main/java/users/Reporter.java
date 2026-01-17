@@ -9,6 +9,11 @@ public class Reporter extends User {
         super(builder.username, builder.email, Role.REPORTER);
     }
 
+    @Override
+    public User copy() {
+        return new Reporter.Builder(this.getUsername(), this.getEmail()).build();
+    }
+
     public static class Builder {
         private String username;
         private String email;

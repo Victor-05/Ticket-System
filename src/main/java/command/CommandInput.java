@@ -1,6 +1,7 @@
 package command;
 
 import lombok.Data;
+import ticket.Filter;
 import ticket.Ticket;
 import users.ExpertiseArea;
 
@@ -15,9 +16,11 @@ public class CommandInput {
     private String name;
     private String dueDate;
     private ArrayList<String> blockingFor;
-    private int[] tickets;
+    private ArrayList<Integer> tickets;
     private ArrayList<String> assignedDevs;
     private int ticketID;
     private ArrayList<String> expertiseArea;
     private String comment;
+    private Filter filters;
+
 }

@@ -14,6 +14,14 @@ public class Manager extends User {
         this.subordinates = builder.subordinates;
     }
 
+    @Override
+    public User copy() {
+        return new Manager.Builder(this.getUsername(), this.getEmail())
+                .hireDate(this.hireDate)
+                .subordinates(new ArrayList<>(this.subordinates))
+                .build();
+    }
+
     public static class Builder {
         private String username;
         private String email;

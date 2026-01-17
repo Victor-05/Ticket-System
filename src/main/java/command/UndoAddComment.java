@@ -8,7 +8,7 @@ import ticket.TicketStorage;
 import java.util.ArrayList;
 
 public class UndoAddComment extends Command {
-    private int ticketID;
+        private int ticketID;
     UndoAddComment(CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
@@ -21,7 +21,9 @@ public class UndoAddComment extends Command {
         if (ticket == null) {
             return;
         }
-        if (ticket.getComments().isEmpty()) {
+        if (ticket.getReportedBy().isEmpty()) {
+            Command error = new ErrorCommand(getCommand(),  getUsername(), getTimestamp(), "Comments are not allowed on anonymous tickets.");
+            commands.add(error);
             return;
         }
         ticket.getComments().removeLast();

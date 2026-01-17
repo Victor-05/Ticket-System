@@ -18,4 +18,5 @@ public abstract class User {
         this.email = email;
         this.role = role;
     }
+    public abstract User copy();
 }

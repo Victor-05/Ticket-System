@@ -1,9 +1,13 @@
 package command;
 
+import actions.Action;
+import actions.AddedToMilestone;
+import actions.Assigned;
 import lombok.Data;
 import main.Application;
 import milestone.Milestone;
 import milestone.MilestoneStorage;
+import ticket.Ticket;
 import ticket.TicketStorage;
 import users.Role;
 import users.UsersDatabase;
@@ -16,7 +20,7 @@ public class CreateMilestone extends Command {
     private String name;
     private String dueDate;
     private ArrayList<String> blockingFor;
-    private int[] tickets;
+    private ArrayList<Integer> tickets;
     private ArrayList<String> assignedDevs;
     CreateMilestone(CommandInput input) {
         this.setCommand(input.getCommand());
@@ -38,10 +42,13 @@ public class CreateMilestone extends Command {
 
         String assignedTickets = "";
         int ticketId = -1;
-        for (int ticket : tickets) {
-            if (ticketStorage.isAssignedToMilestone(ticket) != null) {
-                assignedTickets = assignedTickets + ticket;
-                ticketId = ticket;
+        for (int tickets : tickets) {
+            Action historyAction = new AddedToMilestone("ADDED_TO_MILESTONE", getUsername(), getTimestamp(), getName());
+            Ticket ticket = ticketStorage.getTicketsById(tickets);
+            ticket.getHistory().add(historyAction);
+            if (ticketStorage.isAssignedToMilestone(tickets) != null) {
+                assignedTickets = assignedTickets + tickets;
+                ticketId = tickets;
                 break;
             }
         }

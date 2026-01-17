@@ -1,5 +1,6 @@
 package ticket;
 
+import actions.Action;
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 import users.ExpertiseArea;
@@ -34,6 +35,8 @@ public abstract class Ticket {
     private Boolean isAssignedToMilestone = false;
     @JsonIgnore
     private String createdAt;
+    @JsonIgnore
+    private ArrayList<Action> history = new ArrayList<>();
     public void changePriority() {
         if (this.getBusinessPriority().equals("LOW")) {
             this.setBusinessPriority("MEDIUM");

@@ -1,5 +1,8 @@
 package command;
 
+import actions.Action;
+import actions.Assigned;
+import actions.DeAssigned;
 import main.Application;
 import milestone.MilestoneStorage;
 import ticket.ReportTicket;
@@ -30,6 +33,7 @@ public class UndoAssignTicketCommand extends Command {
         user.getTickets().remove(assignedTicket);
         assignedTicket.setStatus("OPEN");
         assignedTicket.setAssignedAt("");
-        //commands.add(this);
+        Action historyAction = new DeAssigned("DE-ASSIGNED", getUsername(), getTimestamp());
+        assignedTicket.getHistory().add(historyAction);
     }
 }

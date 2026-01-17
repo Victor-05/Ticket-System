@@ -1,9 +1,13 @@
 package command;
 
+import actions.Action;
+import actions.Assigned;
+import actions.StatusChanged;
 import lombok.Data;
 import main.Application;
 import milestone.Milestone;
 import milestone.MilestoneStorage;
+import ticket.HistoryTicket;
 import ticket.ReportTicket;
 import ticket.Ticket;
 import ticket.TicketStorage;
@@ -107,8 +111,12 @@ public class AssignTicketCommand extends Command {
             }
         }
         assignedTicket.setStatus("IN_PROGRESS");
-        ReportTicket ticket = (ReportTicket) assignedTicket;
+        ReportTicket ticket = assignedTicket;
         ticket.setAssignedAt(Application.currentDate.toString());
+        Action historyAction = new Assigned("ASSIGNED", getUsername(), getTimestamp());
+        ticket.getHistory().add(historyAction);
+        historyAction = new StatusChanged("STATUS_CHANGED", getUsername(), getTimestamp(), "OPEN", "IN_PROGRESS");
+        ticket.getHistory().add(historyAction);
         user.getTickets().add(ticket);
     }
 }

@@ -8,6 +8,7 @@ public class Developer extends User {
     private String hireDate;
     private ExpertiseArea expertiseArea;
     private Seniority seniority;
+
     public Developer(String username, String email) {
         super(username, email, Role.DEVELOPER);
     }
@@ -17,6 +18,15 @@ public class Developer extends User {
         this.hireDate = builder.hireDate;
         this.expertiseArea = builder.expertiseArea;
         this.seniority = builder.seniority;
+    }
+
+    @Override
+    public User copy() {
+        return new Developer.Builder(this.getUsername(), this.getEmail())
+                .hireDate(this.hireDate)
+                .expertiseArea(this.expertiseArea)
+                .seniority(this.seniority)
+                .build();
     }
 
     public static class Builder {

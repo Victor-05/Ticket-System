@@ -24,17 +24,19 @@ public class ViewMilestonesCommand extends Command {
     public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
         if (UsersDatabase.getUserRole(getUsername()) == Role.MANAGER) {
             for (Milestone x : milestoneStorage.getMilestones()) {
-                if (x.getCreatedBy().equals(getUsername())) {
-                    milestones.add(x);
+                Milestone copyMilestone = new Milestone(x);
+                if (copyMilestone.getCreatedBy().equals(getUsername())) {
+                    milestones.add(copyMilestone);
                 }
             }
         }
 
         if (UsersDatabase.getUserRole(getUsername()) == Role.DEVELOPER) {
             for (Milestone x : milestoneStorage.getMilestones()) {
-                for (String name : x.getAssignedDevs()) {
+                Milestone copyMilestone = new Milestone(x);
+                for (String name : copyMilestone.getAssignedDevs()) {
                     if (name.equals(getUsername())) {
-                        milestones.add(x);
+                        milestones.add(copyMilestone);
                         break;
                     }
                 }

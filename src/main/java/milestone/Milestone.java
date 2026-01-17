@@ -20,15 +20,15 @@ public class Milestone {
     private ArrayList<String> blockingFor;
     private String dueDate;
     private String createdAt;
-    private int[] tickets;
+    private ArrayList<Integer> tickets;
     private ArrayList<String> assignedDevs;
     private String createdBy;
     private String status;
     private Boolean isBlocked = false;
     private int daysUntilDue;
     private int overdueBy;
-    private ArrayList openTickets = new int[0];
-    private int[] closedTickets =  new int[0];
+    private ArrayList<Integer> openTickets = new ArrayList<>();
+    private ArrayList<Integer> closedTickets = new ArrayList<>();
     private double completionPercentage;
     @JsonIgnore
     private LocalDate priorityChange;
@@ -47,7 +47,8 @@ public class Milestone {
         if (daysUntilDue < 0) {
             overdueBy = (-1) * daysUntilDue;
         }
-        openTickets = tickets;
+        openTickets = new ArrayList<>(tickets);
+        closedTickets = new ArrayList<>();
         for (String x : assignedDevs) {
             Repartition newRepartition = new Repartition();
             newRepartition.setDeveloper(x);
@@ -74,4 +75,28 @@ public class Milestone {
             }
         }
     }
+    public Milestone(Milestone milestone) {
+        this.name = milestone.name;
+        this.blockingFor = new ArrayList<>(milestone.blockingFor);
+        this.dueDate = milestone.dueDate;
+        this.createdAt = milestone.createdAt;
+        this.tickets = new ArrayList<>(milestone.tickets);
+        this.assignedDevs = new ArrayList<>(milestone.assignedDevs);
+        this.createdBy = milestone.createdBy;
+        this.status = milestone.status;
+        this.isBlocked = milestone.isBlocked;
+        this.daysUntilDue = milestone.daysUntilDue;
+        this.overdueBy = milestone.overdueBy;
+        this.openTickets = new ArrayList<>(milestone.openTickets);
+        this.closedTickets = new ArrayList<>(milestone.closedTickets);
+        this.completionPercentage = milestone.completionPercentage;
+        this.priorityChange = milestone.priorityChange;
+
+        this.repartition = new ArrayList<>();
+        for (Repartition r : milestone.repartition) {
+            this.repartition.add(new Repartition(r));
+        }
+    }
+
+
 }

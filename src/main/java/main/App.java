@@ -52,6 +52,12 @@ public class App {
             however you can use some of the more advanced features of
             jackson library, available here: https://www.baeldung.com/jackson-annotations
         */
+        TicketStorage.getInstance().reset();
+        MilestoneStorage.getInstance().reset();
+        UsersDatabase.reset();
+        Application.currentDate = null;
+        Application.endTestingDate = null;
+
         InputLoader inputLoader = new InputLoader(inputPath);
         ArrayNode output = MAPPER.createArrayNode();
         MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
