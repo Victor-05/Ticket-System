@@ -13,7 +13,8 @@ import command.CommandInput;
 import fileio.InputLoader;
 import milestone.MilestoneStorage;
 import ticket.TicketStorage;
-import users.*;
+import users.UserFactory;
+import users.UsersDatabase;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.util.List;
  * main.App represents the main application logic that processes input commands,
  * generates outputs, and writes them to a file
  */
-public class App {
+public final class App {
     private App() {
     }
 
@@ -55,8 +56,6 @@ public class App {
         TicketStorage.getInstance().reset();
         MilestoneStorage.getInstance().reset();
         UsersDatabase.reset();
-        Application.currentDate = null;
-        Application.endTestingDate = null;
 
         InputLoader inputLoader = new InputLoader(inputPath);
         ArrayNode output = MAPPER.createArrayNode();
@@ -84,10 +83,6 @@ public class App {
             ObjectNode cmdNode = MAPPER.valueToTree(x);
             outputs.add(cmdNode);
         }
-
-//        String prettyJson = MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(milestoneStorage.getMilestones());
-//        System.out.println(prettyJson);
-
 
         // TODO 2: process commands.
 

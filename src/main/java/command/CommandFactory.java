@@ -1,15 +1,25 @@
 package command;
 
 import main.Application;
-import milestone.Milestone;
 import milestone.MilestoneStorage;
 import ticket.TicketStorage;
 
-import java.time.LocalDate;
-
-public class CommandFactory {
+public final class CommandFactory {
     private CommandFactory() { }
-    public static Command create(final CommandInput input, final Application app, MilestoneStorage milestoneStorage, TicketStorage ticketStorage) {
+
+    /**
+     * Metoda pentru crearea unei comenzi in functie
+     * de tipul ei citit de la intrare
+     * @param input datele de intrare
+     * @param app aplicatia in sine
+     * @param milestoneStorage milestoneurile stocate
+     * @param ticketStorage ticketele stocate
+     * @return
+     */
+    public static Command create(final CommandInput input,
+                                 final Application app,
+                                 final MilestoneStorage milestoneStorage,
+                                 final TicketStorage ticketStorage) {
         Application.update(input, app, milestoneStorage, ticketStorage);
         return switch (input.getCommand()) {
             case "reportTicket" -> new ReportTicketCommand(input);
@@ -33,7 +43,8 @@ public class CommandFactory {
             case "viewNotifications" -> new ViewNotifications(input);
             case "generateCustomerImpactReport" -> new GenerateCustomerImpactReport(input);
             case "generateTicketRiskReport" -> new GenerateTicketRiskReport(input);
-            case "generateResolutionEfficiencyReport" -> new GenerateResolutionEfficiencyReport(input);
+            case "generateResolutionEfficiencyReport"
+                    -> new GenerateResolutionEfficiencyReport(input);
             case "appStabilityReport" -> new AppStabilityReport(input);
             case "generatePerformanceReport" -> new GeneratePerformanceReport(input);
             case "startTestingPhase" -> new StartTestingPhase(input);

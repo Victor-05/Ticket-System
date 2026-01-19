@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class UndoChangeStatus extends Command {
     private int ticketID;
-    UndoChangeStatus(CommandInput input) {
+    UndoChangeStatus(final CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
@@ -21,7 +21,10 @@ public class UndoChangeStatus extends Command {
     }
 
     @Override
-    public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
+    public final void execute(final Application app,
+                              final TicketStorage ticketStorage,
+                              final ArrayList<Command> commands,
+                              final MilestoneStorage milestoneStorage) {
         ReportTicket ticket = (ReportTicket) ticketStorage.getTicketsById(ticketID);
         Developer user = (Developer) UsersDatabase.getUser(getUsername());
         if (ticket == null) {
@@ -36,7 +39,6 @@ public class UndoChangeStatus extends Command {
         }
         if (isOk) {
             String from = "";
-            //ticket.setT
             if (ticket.getStatus().equals("IN_PROGRESS")) {
                 ticket.setStatus("OPEN");
                 from = "IN_PROGRESS";
@@ -48,12 +50,14 @@ public class UndoChangeStatus extends Command {
                 from = "CLOSED";
                 milestoneStorage.changeOpenToClosed(ticketID);
             }
-            Action historyAction = new StatusChanged("STATUS_CHANGED", getUsername(), getTimestamp(), from, ticket.getStatus());
+            Action historyAction = new StatusChanged("STATUS_CHANGED",
+                    getUsername(), getTimestamp(), from, ticket.getStatus());
             ticket.getHistory().add(historyAction);
         } else {
-            Command error = new ErrorCommand(getCommand(), getUsername(), getTimestamp(), "Ticket " + ticketID + " is not assigned to developer " + getUsername() + ".");
+            Command error = new ErrorCommand(getCommand(), getUsername(),
+                    getTimestamp(), "Ticket " + ticketID
+                    + " is not assigned to developer " + getUsername() + ".");
             commands.add(error);
-            return;
         }
     }
 }

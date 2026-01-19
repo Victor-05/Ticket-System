@@ -1,7 +1,6 @@
 package command;
 
 import actions.Action;
-import actions.Assigned;
 import actions.StatusChanged;
 import lombok.Data;
 import main.Application;
@@ -12,13 +11,12 @@ import ticket.TicketStorage;
 import users.Developer;
 import users.UsersDatabase;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Data
 public class ChangeStatus extends Command {
     private int ticketID;
-    ChangeStatus(CommandInput input) {
+    ChangeStatus(final CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
@@ -26,7 +24,10 @@ public class ChangeStatus extends Command {
     }
 
     @Override
-    public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
+    public final void execute(final Application app,
+                        final TicketStorage ticketStorage,
+                        final ArrayList<Command> commands,
+                        final MilestoneStorage milestoneStorage) {
         ReportTicket ticket = (ReportTicket) ticketStorage.getTicketsById(ticketID);
         Developer user = (Developer) UsersDatabase.getUser(getUsername());
         if (ticket == null) {
@@ -46,26 +47,30 @@ public class ChangeStatus extends Command {
                 from = "OPEN";
             } else if (ticket.getStatus().equals("IN_PROGRESS")) {
                 ticket.setStatus("RESOLVED");
-                Milestone milestone = milestoneStorage.getMilestoneByName(MilestoneStorage.nameOfTheMilestoneThatContaintsTicket(ticket.getId()));
+                Milestone milestone = milestoneStorage
+                        .getMilestoneByName(MilestoneStorage
+                                .nameOfTheMilestoneThatContaintsTicket(ticket
+                                        .getId()));
                 ticket.setDaysToResolve(milestone.getDaysUntilDue());
                 from = "IN_PROGRESS";
             } else if (ticket.getStatus().equals("RESOLVED")) {
-                Milestone milestoneOfTicket = MilestoneStorage.getMilestoneByName(MilestoneStorage.nameOfTheMilestoneThatContaintsTicket(ticketID));
-//                if (milestoneOfTicket.getTickets().getLast() == ticketID) {
-//
-//                }
-
-//                LocalDate dueDate = LocalDate.parse(ticket.getd, app.getDateTimeFormatter());
-                Milestone milestone = milestoneStorage.getMilestoneByName(MilestoneStorage.nameOfTheMilestoneThatContaintsTicket(ticket.getId()));
+                Milestone milestone = milestoneStorage
+                        .getMilestoneByName(MilestoneStorage
+                                .nameOfTheMilestoneThatContaintsTicket(ticket
+                                        .getId()));
                 ticket.setDaysToResolve(milestone.getDaysUntilDue());
                 ticket.setStatus("CLOSED");
                 from = "RESOLVED";
                 milestoneStorage.changeOpenToClosed(ticketID);
             }
-            Action historyAction = new StatusChanged("STATUS_CHANGED", getUsername(), getTimestamp(), from, ticket.getStatus());
+            Action historyAction = new StatusChanged("STATUS_CHANGED", getUsername(),
+                    getTimestamp(), from, ticket.getStatus());
             ticket.getHistory().add(historyAction);
         } else {
-            Command error = new ErrorCommand(getCommand(), getUsername(), getTimestamp(), "Ticket " + ticketID + " is not assigned to developer " + getUsername() + ".");
+            Command error = new ErrorCommand(getCommand(), getUsername(),
+                    getTimestamp(), "Ticket " + ticketID
+                    + " is not assigned to developer "
+                    + getUsername() + ".");
             commands.add(error);
             return;
         }

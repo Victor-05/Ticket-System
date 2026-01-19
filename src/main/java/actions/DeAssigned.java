@@ -1,7 +1,7 @@
 package actions;
 
 public class DeAssigned extends Action {
-    public DeAssigned(String action, String by, String timestamp) {
+    public DeAssigned(final String action, final String by, final String timestamp) {
         setAction(action);
         setBy(by);
         setTimestamp(timestamp);

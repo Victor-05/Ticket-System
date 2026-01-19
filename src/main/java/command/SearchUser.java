@@ -2,20 +2,25 @@ package command;
 
 import main.Application;
 import milestone.MilestoneStorage;
-import ticket.ReportTicket;
-import ticket.Ticket;
 import ticket.TicketStorage;
-import users.*;
+import users.Developer;
+import users.Role;
+import users.User;
+import users.UsersDatabase;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class SearchUser extends Search {
 
-    SearchUser(CommandInput input) {
+    SearchUser(final CommandInput input) {
         super(input);
     }
     @Override
-    public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
+    public final void execute(final Application app,
+                        final TicketStorage ticketStorage,
+                        final ArrayList<Command> commands,
+                        final MilestoneStorage milestoneStorage) {
         setSearchType("DEVELOPER");
         UsersDatabase usersDatabase = UsersDatabase.getInstance();
         ArrayList<User> users = (ArrayList<User>) usersDatabase.getUsers();
@@ -27,16 +32,20 @@ public class SearchUser extends Search {
         for (User x : possibleUsers) {
             if (x.getRole() == Role.DEVELOPER) {
                 Developer user = (Developer) x;
-                if (getFilters().getExpertiseArea() != null && user.getExpertiseArea() != getFilters().getExpertiseArea()) {
+                if (getFilters().getExpertiseArea() != null
+                        && user.getExpertiseArea() != getFilters()
+                        .getExpertiseArea()) {
                     continue;
                 }
-                if (getFilters().getSeniority() != null && user.getSeniority() != getFilters().getSeniority()) {
+                if (getFilters().getSeniority() != null
+                        && user.getSeniority() != getFilters()
+                        .getSeniority()) {
                     continue;
                 }
                 results.add(new SearchUserOutput(user));
             }
         }
-        results.sort((a, b) -> a.getHireDate().compareTo(b.getHireDate()));
+        results.sort(Comparator.comparing(SearchUserOutput::getHireDate));
         setResults(results);
         commands.add(this);
     }

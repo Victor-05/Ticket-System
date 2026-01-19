@@ -1,5 +1,6 @@
 package command;
 
+import constants.Constants;
 import lombok.Data;
 import main.Application;
 import milestone.MilestoneStorage;
@@ -15,7 +16,10 @@ public class ErrorCommand extends Command {
     private String timestamp;
     private String error;
 
-    public ErrorCommand(String command, String username, String timestamp, String error) {
+    public ErrorCommand(final String command,
+                        final String username,
+                        final String timestamp,
+                        final String error) {
         this.command = command;
         this.username = username;
         this.timestamp = timestamp;
@@ -23,14 +27,19 @@ public class ErrorCommand extends Command {
     }
 
     @Override
-    public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
-        if (Application.endTestingDate == null) {
-            LocalDate startTestingDate = LocalDate.parse(getTimestamp(), app.getDateTimeFormatter());
-            Application.endTestingDate = startTestingDate;
-            Application.endTestingDate = startTestingDate.plusDays(12);
+    public final void execute(final Application app,
+                        final TicketStorage ticketStorage,
+                        final ArrayList<Command> commands,
+                        final MilestoneStorage milestoneStorage) {
+        if (app.getEndTestingDate() == null) {
+            LocalDate startTestingDate = LocalDate.parse(getTimestamp(),
+                    app.getDateTimeFormatter());
+            app.setEndTestingDate(startTestingDate);
+            app.setEndTestingDate(startTestingDate
+                    .plusDays(Constants.DAYS_TO_CLOSE_TESTING));
         }
         LocalDate currentDate = LocalDate.parse(getTimestamp(), app.getDateTimeFormatter());
-        if (currentDate.isAfter(Application.endTestingDate)) {
+        if (currentDate.isAfter(app.getEndTestingDate())) {
             app.nextState();
         }
     }

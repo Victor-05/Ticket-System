@@ -11,7 +11,11 @@ public class HistoryTicket {
     private String status;
     private ArrayList<Action> actions;
     private ArrayList<Comment> comments;
-    public HistoryTicket (int id, String title, String status, ArrayList<Action> actions, ArrayList<Comment> comments) {
+    public HistoryTicket(final int id,
+                          final String title,
+                          final String status,
+                          final ArrayList<Action> actions,
+                          final ArrayList<Comment> comments) {
         this.id = id;
         this.title = title;
         this.status = status;

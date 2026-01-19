@@ -16,10 +16,16 @@ public abstract class User {
     @JsonIgnore
     private ArrayList<String> notifications = new ArrayList<>();
     private ArrayList<ReportTicket> tickets = new ArrayList<>();
-    public User(String username, String email, Role role) {
+    public User(final String username, final String email,
+                final Role role) {
         this.username = username;
         this.email = email;
         this.role = role;
     }
+    /**
+     * Returneaza copia unui user
+     * Este suprascrisa de subclase
+     * @return copia unui user
+     */
     public abstract User copy();
 }

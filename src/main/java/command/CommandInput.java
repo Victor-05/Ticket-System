@@ -3,7 +3,6 @@ package command;
 import lombok.Data;
 import ticket.Filter;
 import ticket.Ticket;
-import users.ExpertiseArea;
 
 import java.util.ArrayList;
 

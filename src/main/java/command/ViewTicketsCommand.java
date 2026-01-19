@@ -1,6 +1,5 @@
 package command;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import main.Application;
 import milestone.Milestone;
 import milestone.MilestoneStorage;
@@ -8,23 +7,25 @@ import ticket.Ticket;
 import ticket.TicketStorage;
 import users.Role;
 import users.UsersDatabase;
-
 import java.util.ArrayList;
 
 public class ViewTicketsCommand extends Command {
     private ArrayList<Ticket> tickets;
-    ViewTicketsCommand(CommandInput input) {
+    ViewTicketsCommand(final CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
         this.setParams(input.getParams());
     }
     @Override
-    public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
+    public final void execute(final Application app,
+                              final TicketStorage ticketStorage,
+                              final ArrayList<Command> commands,
+                              final MilestoneStorage milestoneStorage) {
         tickets = new ArrayList<>();
         if (UsersDatabase.getUserRole(getUsername()) == Role.REPORTER) {
-            for (Ticket x : ticketStorage.getTickets()) {}
-            tickets = new ArrayList<>(ticketStorage.getTicketsByUsername(getUsername()));
+            tickets = new ArrayList<>(ticketStorage
+                    .getTicketsByUsername(getUsername()));
             commands.add(this);
             return;
         }
@@ -36,7 +37,8 @@ public class ViewTicketsCommand extends Command {
         if (UsersDatabase.getUserRole(getUsername()) == Role.DEVELOPER) {
             for (Ticket x : ticketStorage.getTickets()) {
                 if (x.getStatus().equals("OPEN")) {
-                    Milestone milestone = MilestoneStorage.getMilestoneByTicketId(x.getId());
+                    Milestone milestone = MilestoneStorage
+                            .getMilestoneByTicketId(x.getId());
                     Boolean isAssigned = false;
                     for (String name : milestone.getAssignedDevs()) {
                         if (name.equals(getUsername())) {

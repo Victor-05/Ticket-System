@@ -10,14 +10,17 @@ import java.util.ArrayList;
 
 public class ViewNotifications  extends Command {
     private ArrayList<String> notifications;
-    ViewNotifications(CommandInput input) {
+    ViewNotifications(final CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
     }
 
     @Override
-    public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
+    public final void execute(final Application app,
+                        final TicketStorage ticketStorage,
+                        final ArrayList<Command> commands,
+                        final MilestoneStorage milestoneStorage) {
         User user = UsersDatabase.getUser(getUsername());
         if (user.getNotifications() != null) {
             notifications = new ArrayList<>(user.getNotifications());

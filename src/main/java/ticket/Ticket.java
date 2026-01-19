@@ -1,7 +1,11 @@
 package ticket;
 
 import actions.Action;
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import users.ExpertiseArea;
 
@@ -62,6 +66,10 @@ public abstract class Ticket {
     private String suggestedFix;
     @JsonIgnore
     private int daysToResolve;
+
+    /**
+     * Metoda care schimba prioritatea unui ticket
+     */
     public void changePriority() {
         if (this.getBusinessPriority().equals("LOW")) {
             this.setBusinessPriority("MEDIUM");
@@ -72,18 +80,18 @@ public abstract class Ticket {
         }
     }
 
-    public void changePriority(String newPriority) {
-        this.setBusinessPriority(newPriority);
-    }
-
+    /**
+     * Metoda care schimba (starea) daca un ticket
+     * este asociat cu un milestone sau nu
+     */
     public void changeIsAssignedToMilestone() {
-        if (isAssignedToMilestone == true) {
-            this.setIsAssignedToMilestone(false);
-        } else {
-            this.setIsAssignedToMilestone(true);
-        }
+        this.setIsAssignedToMilestone(!isAssignedToMilestone);
     }
 
+    /**
+     * Metoda care returneaza o copie a unui ticket
+     * Suprascrisa de alte clase
+     */
     public Ticket copy() {
         return null;
     }

@@ -1,12 +1,8 @@
 package fileio;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import command.CommandInput;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import users.User;
 import users.UserDTO;
 
 import java.io.File;
@@ -15,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Basic skeleton for loading input JSON file as a map.
- * Students should implement deeper parsing themselves.
+ * Input loaderul de la tema trecuta, insa actualizat
  */
 @Getter
 public final class InputLoader {

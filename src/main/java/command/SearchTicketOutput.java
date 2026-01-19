@@ -1,12 +1,8 @@
 package command;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.NonNull;
 import ticket.ReportTicket;
-import ticket.Ticket;
-
 import java.util.ArrayList;
 
 @Data
@@ -21,7 +17,8 @@ public class SearchTicketOutput {
     private String reportedBy;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private ArrayList<String> matchingWords;
-    public SearchTicketOutput(ReportTicket x, ArrayList<String> matchingWords) {
+    public SearchTicketOutput(final ReportTicket x,
+                              final ArrayList<String> matchingWords) {
         this.id = x.getId();
         this.type = x.getType();
         this.title = x.getTitle();

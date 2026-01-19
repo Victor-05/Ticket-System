@@ -1,30 +1,39 @@
 package command;
 
+import constants.Constants;
 import main.Application;
 import milestone.MilestoneStorage;
-import ticket.*;
+import ticket.Frequency;
+import ticket.Severity;
+import ticket.Ticket;
+import ticket.TicketStorage;
+import ticket.BusinessValue;
+import ticket.CustomerDemand;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GenerateResolutionEfficiencyReport extends Command {
     private Report report;
-    GenerateResolutionEfficiencyReport(CommandInput input) {
+    GenerateResolutionEfficiencyReport(final CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
     }
 
     @Override
-    public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
-        List<Double> bug_average = new ArrayList<>();
-        List<Double> feature_average = new ArrayList<>();
-        List<Double> ui_average = new ArrayList<>();
+    public final void execute(final Application app,
+                        final TicketStorage ticketStorage,
+                        final ArrayList<Command> commands,
+                        final MilestoneStorage milestoneStorage) {
+        List<Double> bugAverage = new ArrayList<>();
+        List<Double> featureAverage = new ArrayList<>();
+        List<Double> uiAverage = new ArrayList<>();
 
         report = new Report();
-        report.ticketsByType = new Report.TicketsByType();
-        report.ticketsByPriority = new Report.TicketsByPriority();
-        report.customerImpactByType = new Report.CustomerImpactByType();
+        report.setTicketsByType(new Report.TicketsByType());
+        report.setTicketsByPriority(new Report.TicketsByPriority());
+        report.setCustomerImpactByType(new Report.CustomerImpactByType());
         for (Ticket x : ticketStorage.getTickets()) {
             int frequency = 0;
             int businessPriority = 0;
@@ -37,109 +46,117 @@ public class GenerateResolutionEfficiencyReport extends Command {
                 continue;
             }
             if (x.getType().equals("BUG")) {
-                report.ticketsByType.setBug(report.ticketsByType.getBug() + 1);
+                report.getRiskByType().setBug(report.getRiskByType().getBug() + 1);
 
                 if (x.getFrequency() == Frequency.RARE) {
-                    frequency = 1;
+                    frequency = Constants.FREQUENCY_RARE;
                 } else if (x.getFrequency() == Frequency.OCCASIONAL) {
-                    frequency = 2;
+                    frequency = Constants.FREQUENCY_OCCASIONAL;
                 } else if (x.getFrequency() == Frequency.FREQUENT) {
-                    frequency = 3;
+                    frequency = Constants.FREQUENCY_FREQUENT;
                 } else {
-                    frequency = 4;
+                    frequency = Constants.FREQUENCY_ALWAYS;
                 }
 
                 if (x.getSeverity() == Severity.MINOR) {
-                    severityFactor = 1;
+                    severityFactor = Constants.SEVERITY_MINOR;
                 } else if (x.getSeverity() == Severity.MODERATE) {
-                    severityFactor = 2;
+                    severityFactor = Constants.SEVERITY_MODERATE;
                 } else {
-                    severityFactor = 3;
+                    severityFactor = Constants.SEVERITY_CRITICAL;
                 }
 
                 if (x.getBusinessPriority().equals("LOW")) {
-                    businessPriority = 1;
+                    businessPriority = Constants.BUSINESS_PRIORITY_LOW;
                 } else if (x.getBusinessPriority().equals("MEDIUM")) {
-                    businessPriority = 2;
+                    businessPriority = Constants.BUSINESS_PRIORITY_MEDIUM;
                 } else if (x.getBusinessPriority().equals("HIGH")) {
-                    businessPriority = 3;
+                    businessPriority = Constants.BUSINESS_PRIORITY_HIGH;
                 } else {
-                    businessPriority = 4;
+                    businessPriority = Constants.BUSINESS_PRIORITY_CRITICAL;
                 }
 
-                double bug_score = (frequency + severityFactor) * 10.0 / (x.getDaysToResolve());
-                bug_average.add((bug_score * 100.0) / 70.0);
+                double bugScore = (frequency + severityFactor) * Constants.BUG_SCORE
+                        / (x.getDaysToResolve());
+                bugAverage.add((bugScore * Constants.PERCENATGE) / Constants.BUG_RESOLUTION);
             } else if (x.getType().equals("FEATURE_REQUEST")) {
-                report.ticketsByType.setFeatureRequest(report.ticketsByType.getFeatureRequest() + 1);
+                report.getRiskByType().setFeatureRequest(report.getRiskByType()
+                        .getFeatureRequest() + 1);
 
                 if (x.getBusinessValue() == BusinessValue.S) {
-                    businessValue = 1;
+                    businessValue = Constants.BUSINESS_VALUE_S;
                 } else if (x.getBusinessValue() == BusinessValue.M) {
-                    businessValue = 3;
+                    businessValue = Constants.BUSINESS_VALUE_M;
                 } else if (x.getBusinessValue() == BusinessValue.L) {
-                    businessValue = 6;
+                    businessValue = Constants.BUSINESS_VALUE_L;
                 } else {
-                    businessValue = 10;
+                    businessValue = Constants.BUSINESS_VALUE_XL;
                 }
 
                 if (x.getCustomerDemand() == CustomerDemand.LOW) {
-                    customerDemand = 1;
+                    customerDemand = Constants.CUSTOMER_DEMAND_LOW;
                 } else if (x.getCustomerDemand() == CustomerDemand.MEDIUM) {
-                    customerDemand = 3;
+                    customerDemand = Constants.CUSTOMER_DEMAND_MEDIUM;
                 } else if (x.getCustomerDemand() == CustomerDemand.HIGH) {
-                    customerDemand = 6;
+                    customerDemand = Constants.CUSTOMER_DEMAND_HIGH;
                 } else {
-                    customerDemand = 10;
+                    customerDemand = Constants.CUSTOMER_DEMAND_VERY_HIGH;
                 }
 
-                int feature_value = businessValue * customerDemand;
-                feature_average.add((feature_value * 100.0) / 100);
+                int featureValue = businessValue * customerDemand;
+                featureAverage.add((featureValue * Constants.PERCENATGE)
+                        / Constants.FEATURE_RESOLUTION);
             } else if (x.getType().equals("UI_FEEDBACK")) {
-                report.ticketsByType.setUiFeedback(
-                        report.ticketsByType.getUiFeedback() + 1);
+                report.getRiskByType().setUiFeedback(
+                        report.getRiskByType().getUiFeedback() + 1);
 
-                if (x.getBusinessValue()     == BusinessValue.S) {
-                    businessValue = 1;
+                if (x.getBusinessValue() == BusinessValue.S) {
+                    businessValue = Constants.BUSINESS_VALUE_S;
                 } else if (x.getBusinessValue() == BusinessValue.M) {
-                    businessValue = 3;
+                    businessValue = Constants.BUSINESS_VALUE_M;
                 } else if (x.getBusinessValue() == BusinessValue.L) {
-                    businessValue = 6;
+                    businessValue = Constants.BUSINESS_VALUE_L;
                 } else {
-                    businessValue = 10;
+                    businessValue = Constants.BUSINESS_VALUE_XL;
                 }
+
 
                 usabilityScore = x.getUsabilityScore();
 
                 int uiValue = businessValue * usabilityScore;
-                ui_average.add((uiValue * 100.0) / 100);
+                uiAverage.add((uiValue * Constants.PERCENATGE)
+                        / Constants.UI_RESOLUTION);
             }
             if (x.getBusinessPriority().equals("LOW")) {
-                report.ticketsByPriority.setLow(
-                        report.ticketsByPriority.getLow() + 1);
+                report.getTicketsByPriority().setLow(
+                        report.getTicketsByPriority().getLow() + 1);
             } else if (x.getBusinessPriority().equals("MEDIUM")) {
-                report.ticketsByPriority.setMedium(
-                        report.ticketsByPriority.getMedium() + 1);
+                report.getTicketsByPriority().setMedium(
+                        report.getTicketsByPriority().getMedium() + 1);
             } else if (x.getBusinessPriority().equals("HIGH")) {
-                report.ticketsByPriority.setHigh(
-                        report.ticketsByPriority.getHigh() + 1);
+                report.getTicketsByPriority().setHigh(
+                        report.getTicketsByPriority().getHigh() + 1);
             } else if (x.getBusinessPriority().equals("CRITICAL")) {
-                report.ticketsByPriority.setCritical(
-                        report.ticketsByPriority.getCritical() + 1);
+                report.getTicketsByPriority().setCritical(
+                        report.getTicketsByPriority().getCritical() + 1);
             }
         }
 
-        double bug_final = bug_average.stream()
+        double bugFinal = bugAverage.stream()
                 .mapToDouble(Double::doubleValue).average().orElse(0.0);
-        double feature_final = feature_average.stream()
+        double featureFinal = featureAverage.stream()
                 .mapToDouble(Double::doubleValue).average().orElse(0.0);
-        double ui_final = ui_average.stream()
+        double uiFinal = uiAverage.stream()
                 .mapToDouble(Double::doubleValue).average().orElse(0.0);
 
-        report.customerImpactByType.setBug(Math.round(bug_final * 100.0) / 100.0);
-        report.customerImpactByType.setFeatureRequest(feature_final);
-        report.customerImpactByType.setUiFeedback(ui_final);
+        report.getCustomerImpactByType().setBug(Math.round(bugFinal * Constants.PERCENATGE)
+                / Constants.PERCENATGE);
+        report.getCustomerImpactByType().setFeatureRequest(featureFinal);
+        report.getCustomerImpactByType().setUiFeedback(uiFinal);
 
-        report.setTotalTickets(report.ticketsByType.getBug() + report.ticketsByType.getFeatureRequest() + report.ticketsByType.getUiFeedback());
+        report.setTotalTickets(report.getTicketsByType().getBug()
+                + report.getTicketsByType().getFeatureRequest()
+                + report.getTicketsByType().getUiFeedback());
         commands.add(this);
     }
 }

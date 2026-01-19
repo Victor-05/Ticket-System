@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class UndoAddComment extends Command {
     private int ticketID;
-    UndoAddComment(CommandInput input) {
+    UndoAddComment(final CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
@@ -17,13 +17,17 @@ public class UndoAddComment extends Command {
     }
 
     @Override
-    public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
+    public final void execute(final Application app,
+                              final TicketStorage ticketStorage,
+                              final ArrayList<Command> commands,
+                              final MilestoneStorage milestoneStorage) {
         ReportTicket ticket = (ReportTicket) ticketStorage.getTicketsById(ticketID);
         if (ticket == null) {
             return;
         }
         if (ticket.getReportedBy().isEmpty()) {
-            Command error = new ErrorCommand(getCommand(),  getUsername(), getTimestamp(), "Comments are not allowed on anonymous tickets.");
+            Command error = new ErrorCommand(getCommand(),  getUsername(),
+                    getTimestamp(), "Comments are not allowed on anonymous tickets.");
             commands.add(error);
             return;
         }

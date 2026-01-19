@@ -11,7 +11,7 @@ public class Repartition {
     Repartition() {
 
     }
-    public Repartition(Repartition repartition) {
+    public Repartition(final Repartition repartition) {
         this.developer = repartition.developer;
         this.assignedTickets = new ArrayList<>(repartition.assignedTickets);
     }

@@ -10,13 +10,13 @@ import lombok.Data;
 public class Report {
     private Integer totalTickets;
     private Integer totalOpenTickets;
-    TicketsByType ticketsByType;
-    TicketsByType openTicketsByType;
-    TicketsByPriority openTicketsByPriority;
-    CustomerImpactByType customerImpactByType;
-    TicketsByPriority ticketsByPriority;
-    CustomerRiskByType riskByType;
-    CustomerImpactByType impactByType;
+    private TicketsByType ticketsByType;
+    private TicketsByType openTicketsByType;
+    private TicketsByPriority openTicketsByPriority;
+    private CustomerImpactByType customerImpactByType;
+    private TicketsByPriority ticketsByPriority;
+    private CustomerRiskByType riskByType;
+    private CustomerImpactByType impactByType;
     private String appStability;
 
     Report() {

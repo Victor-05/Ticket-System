@@ -1,9 +1,15 @@
 package command;
 
+import constants.Constants;
 import lombok.Data;
 import main.Application;
 import milestone.MilestoneStorage;
-import ticket.*;
+import ticket.Frequency;
+import ticket.Severity;
+import ticket.Ticket;
+import ticket.TicketStorage;
+import ticket.BusinessValue;
+import ticket.CustomerDemand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,27 +17,41 @@ import java.util.List;
 @Data
 public class GenerateTicketRiskReport extends Command {
     private Report report;
-    GenerateTicketRiskReport(CommandInput input) {
+    GenerateTicketRiskReport(final CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
     }
 
     @Override
-    public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
+    public final void execute(final Application app,
+                        final TicketStorage ticketStorage,
+                        final ArrayList<Command> commands,
+                        final MilestoneStorage milestoneStorage) {
         executeWithoutPrint(app, ticketStorage, commands, milestoneStorage);
         commands.add(this);
     }
 
-    public void executeWithoutPrint(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
-        List<Double> bug_average = new ArrayList<>();
-        List<Double> feature_average = new ArrayList<>();
-        List<Double> ui_average = new ArrayList<>();
+    /**
+     * Executarea actiunii specifice a acestei comenzi
+     * fara printarea rezultatului
+     * @param app aplicatia in sine
+     * @param ticketStorage locul unde sunt toate ticketele
+     * @param commands lista de comenzi
+     * @param milestoneStorage locul unde sunt toate milestoneurile
+     */
+    public final void executeWithoutPrint(final Application app,
+                                    final TicketStorage ticketStorage,
+                                    final ArrayList<Command> commands,
+                                    final MilestoneStorage milestoneStorage) {
+        List<Double> bugAverage = new ArrayList<>();
+        List<Double> featureAverage = new ArrayList<>();
+        List<Double> uiAverage = new ArrayList<>();
 
         report = new Report();
-        report.ticketsByType = new Report.TicketsByType();
-        report.ticketsByPriority = new Report.TicketsByPriority();
-        report.riskByType = new Report.CustomerRiskByType();
+        report.setTicketsByType(new Report.TicketsByType());
+        report.setTicketsByPriority(new Report.TicketsByPriority());
+        report.setRiskByType(new Report.CustomerRiskByType());
 
         for (Ticket x : ticketStorage.getTickets()) {
             int frequency = 0;
@@ -45,120 +65,138 @@ public class GenerateTicketRiskReport extends Command {
                 continue;
             }
             if (x.getType().equals("BUG")) {
-                report.ticketsByType.setBug(report.ticketsByType.getBug() + 1);
+                report.getTicketsByType().setBug(report.getTicketsByType().getBug() + 1);
 
                 if (x.getFrequency() == Frequency.RARE) {
-                    frequency = 1;
+                    frequency = Constants.FREQUENCY_RARE;
                 } else if (x.getFrequency() == Frequency.OCCASIONAL) {
-                    frequency = 2;
+                    frequency = Constants.FREQUENCY_OCCASIONAL;
                 } else if (x.getFrequency() == Frequency.FREQUENT) {
-                    frequency = 3;
+                    frequency = Constants.FREQUENCY_FREQUENT;
                 } else {
-                    frequency = 4;
+                    frequency = Constants.FREQUENCY_ALWAYS;
                 }
 
                 if (x.getSeverity() == Severity.MINOR) {
-                    severityFactor = 1;
+                    severityFactor = Constants.SEVERITY_MINOR;
                 } else if (x.getSeverity() == Severity.MODERATE) {
-                    severityFactor = 2;
+                    severityFactor = Constants.SEVERITY_MODERATE;
                 } else {
-                    severityFactor = 3;
+                    severityFactor = Constants.SEVERITY_CRITICAL;
                 }
+
 
                 if (x.getBusinessPriority().equals("LOW")) {
-                    businessPriority = 1;
+                    businessPriority = Constants.BUSINESS_PRIORITY_LOW;
                 } else if (x.getBusinessPriority().equals("MEDIUM")) {
-                    businessPriority = 2;
+                    businessPriority = Constants.BUSINESS_PRIORITY_MEDIUM;
                 } else if (x.getBusinessPriority().equals("HIGH")) {
-                    businessPriority = 3;
+                    businessPriority = Constants.BUSINESS_PRIORITY_HIGH;
                 } else {
-                    businessPriority = 4;
+                    businessPriority = Constants.BUSINESS_PRIORITY_CRITICAL;
                 }
 
-                int bug_value = frequency * severityFactor;
-                bug_average.add((bug_value * 100.0) / 12.0);
+                int bugValue = frequency * severityFactor;
+                bugAverage.add((bugValue * Constants.PERCENATGE)
+                        / Constants.BUG_RISK);
             } else if (x.getType().equals("FEATURE_REQUEST")) {
-                report.ticketsByType.setFeatureRequest(
-                        report.ticketsByType.getFeatureRequest() + 1);
+                report.getTicketsByType().setFeatureRequest(
+                        report.getTicketsByType().getFeatureRequest() + 1);
 
                 if (x.getBusinessValue() == BusinessValue.S) {
-                    businessValue = 1;
+                    businessValue = Constants.BUSINESS_VALUE_S;
                 } else if (x.getBusinessValue() == BusinessValue.M) {
-                    businessValue = 3;
+                    businessValue = Constants.BUSINESS_VALUE_M;
                 } else if (x.getBusinessValue() == BusinessValue.L) {
-                    businessValue = 6;
+                    businessValue = Constants.BUSINESS_VALUE_L;
                 } else {
-                    businessValue = 10;
+                    businessValue = Constants.BUSINESS_VALUE_XL;
                 }
 
                 if (x.getCustomerDemand() == CustomerDemand.LOW) {
-                    customerDemand = 1;
+                    customerDemand = Constants.CUSTOMER_DEMAND_LOW;
                 } else if (x.getCustomerDemand() == CustomerDemand.MEDIUM) {
-                    customerDemand = 3;
+                    customerDemand = Constants.CUSTOMER_DEMAND_MEDIUM;
                 } else if (x.getCustomerDemand() == CustomerDemand.HIGH) {
-                    customerDemand = 6;
+                    customerDemand = Constants.CUSTOMER_DEMAND_HIGH;
                 } else {
-                    customerDemand = 10;
+                    customerDemand = Constants.CUSTOMER_DEMAND_VERY_HIGH;
                 }
 
-                int feature_value = businessValue + customerDemand;
-                feature_average.add((feature_value * 100.0) / 20.0);
+                int featureValue = businessValue + customerDemand;
+                featureAverage.add((featureValue * Constants.PERCENATGE)
+                        / Constants.FEATURE_RISK);
             } else if (x.getType().equals("UI_FEEDBACK")) {
-                report.ticketsByType.setUiFeedback(
-                        report.ticketsByType.getUiFeedback() + 1);
+                report.getTicketsByType().setUiFeedback(
+                        report.getTicketsByType().getUiFeedback() + 1);
 
                 if (x.getBusinessValue() == BusinessValue.S) {
-                    businessValue = 1;
+                    businessValue = Constants.BUSINESS_VALUE_S;
                 } else if (x.getBusinessValue() == BusinessValue.M) {
-                    businessValue = 3;
+                    businessValue = Constants.BUSINESS_VALUE_M;
                 } else if (x.getBusinessValue() == BusinessValue.L) {
-                    businessValue = 6;
+                    businessValue = Constants.BUSINESS_VALUE_L;
                 } else {
-                    businessValue = 10;
+                    businessValue = Constants.BUSINESS_VALUE_XL;
                 }
 
                 usabilityScore = x.getUsabilityScore();
 
-                int uiValue = (11 - usabilityScore) * businessValue;
-                ui_average.add((uiValue * 100.0) / 100.0);
+                int uiValue = (Constants.UI_RISK - usabilityScore)
+                        * businessValue;
+                uiAverage.add((uiValue * Constants.PERCENATGE)
+                        / Constants.PERCENATGE);
             }
             if (x.getBusinessPriority().equals("LOW")) {
-                report.ticketsByPriority.setLow(
-                        report.ticketsByPriority.getLow() + 1);
+                report.getTicketsByPriority().setLow(
+                        report.getTicketsByPriority().getLow() + 1);
             } else if (x.getBusinessPriority().equals("MEDIUM")) {
-                report.ticketsByPriority.setMedium(
-                        report.ticketsByPriority.getMedium() + 1);
+                report.getTicketsByPriority().setMedium(
+                        report.getTicketsByPriority().getMedium() + 1);
             } else if (x.getBusinessPriority().equals("HIGH")) {
-                report.ticketsByPriority.setHigh(
-                        report.ticketsByPriority.getHigh() + 1);
+                report.getTicketsByPriority().setHigh(
+                        report.getTicketsByPriority().getHigh() + 1);
             } else if (x.getBusinessPriority().equals("CRITICAL")) {
-                report.ticketsByPriority.setCritical(
-                        report.ticketsByPriority.getCritical() + 1);
+                report.getTicketsByPriority().setCritical(
+                        report.getTicketsByPriority().getCritical() + 1);
             }
         }
 
-        double bug_final = bug_average.stream()
+        double bugFinal = bugAverage.stream()
                 .mapToDouble(Double::doubleValue).average().orElse(0.0);
-        double feature_final = feature_average.stream()
+        double featureFinal = featureAverage.stream()
                 .mapToDouble(Double::doubleValue).average().orElse(0.0);
-        double ui_final = ui_average.stream()
+        double uiFinal = uiAverage.stream()
                 .mapToDouble(Double::doubleValue).average().orElse(0.0);
 
-        double bugRisk = Math.round(bug_final * 100.0) / 100.0;
-        double featureRisk = Math.round(feature_final * 100.0) / 100.0;
-        double uiRisk = Math.round(ui_final * 100.0) / 100.0;
-        report.riskByType.setBug(riskCategory(bugRisk));
-        report.riskByType.setFeatureRequest(riskCategory(featureRisk));
-        report.riskByType.setUiFeedback(riskCategory(uiRisk));
+        double bugRisk = Math.round(bugFinal * Constants.PERCENATGE)
+                / Constants.PERCENATGE;
+        double featureRisk = Math.round(featureFinal * Constants.PERCENATGE)
+                / Constants.PERCENATGE;
+        double uiRisk = Math.round(uiFinal * Constants.PERCENATGE)
+                / Constants.PERCENATGE;
+        report.getRiskByType().setBug(riskCategory(bugRisk));
+        report.getRiskByType().setFeatureRequest(riskCategory(featureRisk));
+        report.getRiskByType().setUiFeedback(riskCategory(uiRisk));
 
-        report.setTotalTickets(report.ticketsByType.getBug() + report.ticketsByType.getFeatureRequest() + report.ticketsByType.getUiFeedback());
+        report.setTotalTickets(report.getTicketsByType().getBug()
+                + report.getTicketsByType().getFeatureRequest()
+                + report.getTicketsByType().getUiFeedback());
     }
 
-    private static String riskCategory(double value) {
-        if (value <= 24) return "NEGLIGIBLE";
-        if (value <= 49) return "MODERATE";
-        if (value <= 74) return "SIGNIFICANT";
-        if (value <= 100) return "MAJOR";
-        return "INVALID";
+    private static String riskCategory(final double value) {
+        if (value <= Constants.RISK_NEGLIGIBLE) {
+            return "NEGLIGIBLE";
+        }
+        if (value <= Constants.RISK_MODERATE) {
+            return "MODERATE";
+        }
+        if (value <= Constants.RISK_SIGNIFICANT) {
+            return "SIGNIFICANT";
+        }
+        if (value <= Constants.RISK_MAJOR) {
+            return "MAJOR";
+        }
+        return null;
     }
 }

@@ -13,7 +13,7 @@ public class ReportTicket extends Ticket {
     private String solvedAt;
     private String assignedTo;
     private ArrayList<Comment> comments = new ArrayList<>();
-    public ReportTicket(ReportTicketCommand command) {
+    public ReportTicket(final ReportTicketCommand command) {
         this.setType(command.getParams().getType());
         this.setTitle(command.getParams().getTitle());
         this.setBusinessPriority(command.getParams().getBusinessPriority());
@@ -37,7 +37,7 @@ public class ReportTicket extends Ticket {
         this.setScreenshotUrl(command.getParams().getScreenshotUrl());
         this.setSuggestedFix(command.getParams().getSuggestedFix());
     }
-    public ReportTicket(ReportTicket ticket) {
+    public ReportTicket(final ReportTicket ticket) {
         this.setId(ticket.getId());
         this.setType(ticket.getType());
         this.setTitle(ticket.getTitle());
@@ -53,6 +53,10 @@ public class ReportTicket extends Ticket {
         this.setExpertiseArea(ticket.getExpertiseArea());
     }
 
+    /**
+     * Metoda ce returneaza copia unui ticket
+     * @return
+     */
     @Override
     public Ticket copy() {
         return new ReportTicket(this);

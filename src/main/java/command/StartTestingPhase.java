@@ -3,18 +3,19 @@ package command;
 import main.Application;
 import milestone.MilestoneStorage;
 import ticket.TicketStorage;
-import users.UsersDatabase;
-
 import java.util.ArrayList;
 
 public class StartTestingPhase extends Command {
-    StartTestingPhase(CommandInput input) {
+    StartTestingPhase(final CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
     }
 
     @Override
-    public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
+    public final void execute(final Application app,
+                        final TicketStorage ticketStorage,
+                        final ArrayList<Command> commands,
+                        final MilestoneStorage milestoneStorage) {
     }
 }

@@ -4,7 +4,6 @@ import lombok.Data;
 import users.Developer;
 import users.ExpertiseArea;
 import users.Seniority;
-import users.User;
 
 @Data
 public class SearchUserOutput {
@@ -13,7 +12,7 @@ public class SearchUserOutput {
     private Seniority seniority;
     private double performanceScore;
     private String hireDate;
-    SearchUserOutput(Developer x) {
+    SearchUserOutput(final Developer x) {
         this.username = x.getUsername();
         this.expertiseArea = x.getExpertiseArea();
         this.seniority = x.getSeniority();

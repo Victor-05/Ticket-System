@@ -6,22 +6,23 @@ import milestone.MilestoneStorage;
 import ticket.TicketStorage;
 import users.Role;
 import users.UsersDatabase;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class ViewMilestonesCommand extends Command {
     private List<Milestone> milestones = new ArrayList<>();
-    ViewMilestonesCommand(CommandInput input) {
+    ViewMilestonesCommand(final CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
         this.setParams(input.getParams());
     }
     @Override
-    public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
+    public final void execute(final Application app,
+                        final TicketStorage ticketStorage,
+                        final ArrayList<Command> commands,
+                        final MilestoneStorage milestoneStorage) {
         if (UsersDatabase.getUserRole(getUsername()) == Role.MANAGER) {
             for (Milestone x : milestoneStorage.getMilestones()) {
                 Milestone copyMilestone = new Milestone(x);
