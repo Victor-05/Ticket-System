@@ -10,6 +10,7 @@ import milestone.MilestoneStorage;
 import ticket.Ticket;
 import ticket.TicketStorage;
 import users.Role;
+import users.User;
 import users.UsersDatabase;
 
 import java.time.LocalDate;
@@ -45,7 +46,8 @@ public class CreateMilestone extends Command {
         for (int tickets : tickets) {
             Action historyAction = new AddedToMilestone("ADDED_TO_MILESTONE", getUsername(), getTimestamp(), getName());
             Ticket ticket = ticketStorage.getTicketsById(tickets);
-            ticket.getHistory().add(historyAction);
+            if (ticket != null)
+                ticket.getHistory().add(historyAction);
             if (ticketStorage.isAssignedToMilestone(tickets) != null) {
                 assignedTickets = assignedTickets + tickets;
                 ticketId = tickets;
@@ -63,6 +65,10 @@ public class CreateMilestone extends Command {
         Milestone newMilestone = new Milestone(this);
         newMilestone.setPriorityChange(currentDate.plusDays(3));
         milestoneStorage.addMilestone(newMilestone);
+        for (String dev : assignedDevs) {
+            User user = UsersDatabase.getUser(dev);
+            user.getNotifications().add("New milestone " + newMilestone.getName() + " has been created with due date " + newMilestone.getDueDate() + ".");
+        }
         for (String x : blockingFor) {
             for (Milestone m : milestoneStorage.getMilestones()) {
                 if (m.getName().equals(x)) {

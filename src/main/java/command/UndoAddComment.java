@@ -8,11 +8,12 @@ import ticket.TicketStorage;
 import java.util.ArrayList;
 
 public class UndoAddComment extends Command {
-        private int ticketID;
+    private int ticketID;
     UndoAddComment(CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
+        ticketID = input.getTicketID();
     }
 
     @Override
@@ -26,6 +27,8 @@ public class UndoAddComment extends Command {
             commands.add(error);
             return;
         }
-        ticket.getComments().removeLast();
+        if (!ticket.getComments().isEmpty()) {
+            ticket.getComments().removeLast();
+        }
     }
 }

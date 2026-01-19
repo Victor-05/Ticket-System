@@ -2,6 +2,7 @@ package command;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import main.Application;
+import milestone.Milestone;
 import milestone.MilestoneStorage;
 import ticket.Ticket;
 import ticket.TicketStorage;
@@ -22,21 +23,33 @@ public class ViewTicketsCommand extends Command {
     public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
         tickets = new ArrayList<>();
         if (UsersDatabase.getUserRole(getUsername()) == Role.REPORTER) {
-            tickets = ticketStorage.getTicketsByUsername(getUsername());
+            for (Ticket x : ticketStorage.getTickets()) {}
+            tickets = new ArrayList<>(ticketStorage.getTicketsByUsername(getUsername()));
             commands.add(this);
             return;
         }
         if (UsersDatabase.getUserRole(getUsername()) == Role.MANAGER) {
-            tickets.addAll(ticketStorage.getTickets());
+            tickets.addAll(new ArrayList<>(ticketStorage.getTickets()));
             commands.add(this);
             return;
         }
         if (UsersDatabase.getUserRole(getUsername()) == Role.DEVELOPER) {
             for (Ticket x : ticketStorage.getTickets()) {
                 if (x.getStatus().equals("OPEN")) {
-                    tickets.add(x);
+                    Milestone milestone = MilestoneStorage.getMilestoneByTicketId(x.getId());
+                    Boolean isAssigned = false;
+                    for (String name : milestone.getAssignedDevs()) {
+                        if (name.equals(getUsername())) {
+                            isAssigned = true;
+                            break;
+                        }
+                    }
+                    if (isAssigned) {
+                        tickets.add(x.copy());
+                    }
                 }
             }
+            tickets = new ArrayList<>(tickets);
             commands.add(this);
         }
     }

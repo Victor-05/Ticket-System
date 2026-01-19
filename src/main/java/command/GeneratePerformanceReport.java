@@ -3,14 +3,12 @@ package command;
 import main.Application;
 import milestone.MilestoneStorage;
 import ticket.TicketStorage;
-import users.User;
 import users.UsersDatabase;
 
 import java.util.ArrayList;
 
-public class ViewNotifications  extends Command {
-    private ArrayList<String> notifications;
-    ViewNotifications(CommandInput input) {
+public class GeneratePerformanceReport extends Command {
+    GeneratePerformanceReport(CommandInput input) {
         this.setCommand(input.getCommand());
         this.setUsername(input.getUsername());
         this.setTimestamp(input.getTimestamp());
@@ -18,12 +16,5 @@ public class ViewNotifications  extends Command {
 
     @Override
     public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
-        User user = UsersDatabase.getUser(getUsername());
-        if (user.getNotifications() != null) {
-            notifications = new ArrayList<>(user.getNotifications());
-        } else {
-            notifications = new ArrayList<>();
-        }
-        commands.add(this);
     }
 }

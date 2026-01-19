@@ -22,9 +22,20 @@ public class ReportTicket extends Ticket {
         this.setSolvedAt("");
         this.setAssignedTo("");
         this.setReportedBy(command.getParams().getReportedBy());
-        this.setExpertiseArea(command.getParams().getExpertiseArea());
         this.setCreatedAt(command.getTimestamp());
         this.setExpertiseArea(command.getParams().getExpertiseArea());
+        this.setExpectedBehavior(command.getParams().getExpectedBehavior());
+        this.setActualBehavior(command.getParams().getActualBehavior());
+        this.setFrequency(command.getParams().getFrequency());
+        this.setSeverity(command.getParams().getSeverity());
+        this.setEnvironment(command.getParams().getEnvironment());
+        this.setErrorCode(command.getParams().getErrorCode());
+        this.setBusinessValue(command.getParams().getBusinessValue());
+        this.setCustomerDemand(command.getParams().getCustomerDemand());
+        this.setUiElementId(command.getParams().getUiElementId());
+        this.setUsabilityScore(command.getParams().getUsabilityScore());
+        this.setScreenshotUrl(command.getParams().getScreenshotUrl());
+        this.setSuggestedFix(command.getParams().getSuggestedFix());
     }
     public ReportTicket(ReportTicket ticket) {
         this.setId(ticket.getId());
@@ -40,5 +51,12 @@ public class ReportTicket extends Ticket {
         this.setAssignedTo(ticket.getAssignedTo());
         this.setComments(new ArrayList<>(ticket.getComments()));
         this.setExpertiseArea(ticket.getExpertiseArea());
+    }
+
+    @Override
+    public Ticket copy() {
+        return new ReportTicket(this);
+    }
+    public ReportTicket() {
     }
 }

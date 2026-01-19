@@ -5,12 +5,14 @@ import actions.Assigned;
 import actions.StatusChanged;
 import lombok.Data;
 import main.Application;
+import milestone.Milestone;
 import milestone.MilestoneStorage;
 import ticket.ReportTicket;
 import ticket.TicketStorage;
 import users.Developer;
 import users.UsersDatabase;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Data
@@ -44,8 +46,18 @@ public class ChangeStatus extends Command {
                 from = "OPEN";
             } else if (ticket.getStatus().equals("IN_PROGRESS")) {
                 ticket.setStatus("RESOLVED");
+                Milestone milestone = milestoneStorage.getMilestoneByName(MilestoneStorage.nameOfTheMilestoneThatContaintsTicket(ticket.getId()));
+                ticket.setDaysToResolve(milestone.getDaysUntilDue());
                 from = "IN_PROGRESS";
             } else if (ticket.getStatus().equals("RESOLVED")) {
+                Milestone milestoneOfTicket = MilestoneStorage.getMilestoneByName(MilestoneStorage.nameOfTheMilestoneThatContaintsTicket(ticketID));
+//                if (milestoneOfTicket.getTickets().getLast() == ticketID) {
+//
+//                }
+
+//                LocalDate dueDate = LocalDate.parse(ticket.getd, app.getDateTimeFormatter());
+                Milestone milestone = milestoneStorage.getMilestoneByName(MilestoneStorage.nameOfTheMilestoneThatContaintsTicket(ticket.getId()));
+                ticket.setDaysToResolve(milestone.getDaysUntilDue());
                 ticket.setStatus("CLOSED");
                 from = "RESOLVED";
                 milestoneStorage.changeOpenToClosed(ticketID);

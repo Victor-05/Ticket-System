@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 import users.ExpertiseArea;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Data
@@ -37,14 +36,38 @@ public abstract class Ticket {
     private String createdAt;
     @JsonIgnore
     private ArrayList<Action> history = new ArrayList<>();
+    @JsonIgnore
+    private String expectedBehavior;
+    @JsonIgnore
+    private String actualBehavior;
+    @JsonIgnore
+    private Frequency frequency;
+    @JsonIgnore
+    private Severity severity;
+    @JsonIgnore
+    private String environment;
+    @JsonIgnore
+    private int errorCode;
+    @JsonIgnore
+    private BusinessValue businessValue;
+    @JsonIgnore
+    private CustomerDemand customerDemand;
+    @JsonIgnore
+    private String uiElementId;
+    @JsonIgnore
+    private int usabilityScore;
+    @JsonIgnore
+    private String screenshotUrl;
+    @JsonIgnore
+    private String suggestedFix;
+    @JsonIgnore
+    private int daysToResolve;
     public void changePriority() {
         if (this.getBusinessPriority().equals("LOW")) {
             this.setBusinessPriority("MEDIUM");
-        }
-        if (this.getBusinessPriority().equals("MEDIUM")) {
+        } else if (this.getBusinessPriority().equals("MEDIUM")) {
             this.setBusinessPriority("HIGH");
-        }
-        if (this.getBusinessPriority().equals("HIGH")) {
+        } else if (this.getBusinessPriority().equals("HIGH")) {
             this.setBusinessPriority("CRITICAL");
         }
     }
@@ -61,4 +84,7 @@ public abstract class Ticket {
         }
     }
 
+    public Ticket copy() {
+        return null;
+    }
 }

@@ -59,14 +59,27 @@ public class MilestoneStorage {
             int counter = 0;
             for (int id : x.getTickets()) {
                 if (ticketId == id) {
-                    x.getOpenTickets().remove(counter);
-                    x.getClosedTickets().addLast(ticketId);
-                    x.setCompletionPercentage(x.getClosedTickets().size() / x.getTickets().size());
-                    return;
+                    if (counter < x.getOpenTickets().size()) {
+                        x.getOpenTickets().remove(counter);
+                        x.getClosedTickets().addLast(ticketId);
+                        x.setCompletionPercentage(x.getClosedTickets().size() / x.getTickets().size());
+                        return;
+                    }
                 }
                 counter++;
             }
         }
+    }
+
+    public static Milestone getMilestoneByTicketId(int id) {
+        for (Milestone x : milestones) {
+            for (int ticketId : x.getTickets()) {
+                if (ticketId == id) {
+                    return x;
+                }
+            }
+        }
+        return null;
     }
 
     public void reset() {

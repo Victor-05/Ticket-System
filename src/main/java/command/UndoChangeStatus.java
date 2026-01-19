@@ -36,6 +36,7 @@ public class UndoChangeStatus extends Command {
         }
         if (isOk) {
             String from = "";
+            //ticket.setT
             if (ticket.getStatus().equals("IN_PROGRESS")) {
                 ticket.setStatus("OPEN");
                 from = "IN_PROGRESS";

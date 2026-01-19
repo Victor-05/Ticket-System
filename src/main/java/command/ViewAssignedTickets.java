@@ -6,8 +6,7 @@ import milestone.MilestoneStorage;
 import ticket.ReportTicket;
 import ticket.Ticket;
 import ticket.TicketStorage;
-import users.Developer;
-import users.UsersDatabase;
+import users.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,7 +21,12 @@ public class ViewAssignedTickets extends Command {
     }
     @Override
     public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
-        Developer user = (Developer) UsersDatabase.getUser(getUsername());
+        User user = UsersDatabase.getUser(getUsername());
+        if (UsersDatabase.getUser(getUsername()).getRole() != Role.DEVELOPER) {
+            user = (Manager) UsersDatabase.getUser(getUsername());
+        } else {
+            user = (Developer) UsersDatabase.getUser(getUsername());
+        }
         assignedTickets = new ArrayList<>();
         for (ReportTicket x : user.getTickets()) {
             assignedTickets.add(new AssignedTicketView(x));

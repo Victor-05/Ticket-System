@@ -25,6 +25,9 @@ public class UndoAssignTicketCommand extends Command {
     public void execute(Application app, TicketStorage ticketStorage, ArrayList<Command> commands, MilestoneStorage milestoneStorage) {
         Developer user = (Developer) UsersDatabase.getUser(getUsername());
         ReportTicket assignedTicket = (ReportTicket) ticketStorage.getTicketsById(ticketID);
+        if (assignedTicket == null) {
+            return;
+        }
         if (!assignedTicket.getStatus().equals("IN_PROGRESS")) {
             Command error = new ErrorCommand(getCommand(),  getUsername(), getTimestamp(), "Only IN_PROGRESS tickets can be unassigned.");
             commands.add(error);

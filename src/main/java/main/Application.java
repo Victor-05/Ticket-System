@@ -7,6 +7,7 @@ import milestone.MilestoneStorage;
 import milestone.Repartition;
 import ticket.ReportTicket;
 import ticket.TicketStorage;
+import users.User;
 import users.UsersDatabase;
 
 import java.text.SimpleDateFormat;
@@ -58,6 +59,12 @@ public class Application {
             }
             LocalDate due = LocalDate.parse(x.getDueDate(), Application.dateTimeFormatter);
             x.setDaysUntilDue((int) ChronoUnit.DAYS.between(Application.currentDate, due));
+            if (x.getDaysUntilDue() <= 1) {
+                for (String dev : x.getAssignedDevs()) {
+                    User user = UsersDatabase.getUser(dev);
+                    user.getNotifications().add("Milestone " + x.getName() + " is due tomorrow. All unresolved tickets are now CRITICAL.");
+                }
+            }
             if (x.getDaysUntilDue() < 0) {
                 x.setDaysUntilDue(x.getDaysUntilDue() - 1);
                 x.setOverdueBy((-1) * x.getDaysUntilDue());

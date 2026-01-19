@@ -69,9 +69,9 @@ public class Milestone {
         }
         LocalDate dueDate = LocalDate.parse(getDueDate(), app.getDateTimeFormatter());
         for (Ticket x : ticketStorage.getTickets()) {
-            if (x.getStatus().equals("ACTIVE") && Application.currentDate.isAfter(dueDate.minusDays(2))) {
-                x.changePriority("CRITICAL");
-                break;
+            if (x.getStatus().equals("OPEN") && Application.currentDate.isAfter(dueDate.minusDays(3))) {
+//                x.changePriority("CRITICAL");
+//                break;
             }
         }
     }

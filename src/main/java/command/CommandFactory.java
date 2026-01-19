@@ -30,6 +30,13 @@ public class CommandFactory {
                 case "DEVELOPER" -> new SearchUser(input);
                 default -> null;
             };
+            case "viewNotifications" -> new ViewNotifications(input);
+            case "generateCustomerImpactReport" -> new GenerateCustomerImpactReport(input);
+            case "generateTicketRiskReport" -> new GenerateTicketRiskReport(input);
+            case "generateResolutionEfficiencyReport" -> new GenerateResolutionEfficiencyReport(input);
+            case "appStabilityReport" -> new AppStabilityReport(input);
+            case "generatePerformanceReport" -> new GeneratePerformanceReport(input);
+            case "startTestingPhase" -> new StartTestingPhase(input);
             default -> null;
         };
     }
