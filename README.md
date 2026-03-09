@@ -1,4 +1,4 @@
-# Tema 2 - POO, SERBAN Victor Gabriel 323CA
+# Ticket System - POO, SERBAN Victor Gabriel 323CA
 
 ## Descriere
 Acest proiect reprezinta un sistem de gestionare a ticketelor si milestone-urilor intr-o echipa de dezvoltare software, permitand raportarea bug-urilor, asignarea lor catre developeri si urmarirea progresului prin diferite stari ale aplicatiei.
